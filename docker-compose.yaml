@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  service-app-golang-mygram:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_NAME=mygram
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_HOST=service-postgre
+      - DB_PORT=5432
+      - PORT=8080
+      - JWT_SECRET_KEY =rahasia
+      - JWT_EXPIRED=360
+      - MODE=development
+    ports:
+      - "8080:8080"
+    networks:
+      - network-mygram
+    depends_on:
+      - service-postgre
+
+  service-postgre:
+    image: postgres:alpine3.15
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=mygram
+    volumes:
+      - C:\Development\DB-VOLUME\postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - network-mygram
+
+networks:
+  network-mygram:
+    driver: bridge
